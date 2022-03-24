@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
+const User = require("../models/user").User;
+const Driver = require("../models/driver");
 
 // Get all
 router.get("/", async (req, res) => {
@@ -29,7 +30,17 @@ router.post("/", async (req, res) => {
   try {
     const newUser = await user.save();
     // 201 newly created
-    res.status(201).json(newUser);
+    if (newUser.userType === "driver") {
+      const { isVaccinated, isVerified } = req.body;
+      const newDriver = await insertDriverDetails(
+        newUser,
+        isVaccinated,
+        isVerified
+      );
+      res.status(201).json(newDriver);
+    } else {
+      res.status(201).json(newUser);
+    }
   } catch (err) {
     // 400 bad user input
     res.status(400).json({ message: err.message });
@@ -83,3 +94,13 @@ async function getUser(req, res, next) {
   res.user = user;
   next();
 }
+
+// Insert Driver Details
+const insertDriverDetails = async (userInfo, isVaccinated, isVerified) => {
+  const newDriver = new Driver({
+    userInfo,
+    isVaccinated,
+    isVerified,
+  });
+  return newDriver.save();
+};

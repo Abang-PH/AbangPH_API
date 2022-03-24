@@ -20,4 +20,7 @@ app.use("/cities", cityRouter);
 const transpoServiceRouter = require("./routes/transposervices");
 app.use("/transposervices", transpoServiceRouter);
 
+const driverRouter = require("./routes/drivers");
+app.use("/drivers", driverRouter);
+
 app.listen(3000, () => console.log("Server Started"));
