@@ -1,7 +1,9 @@
 const express = require("express");
+const driver = require("../models/driver");
 const router = express.Router();
 const User = require("../models/user").User;
 const Driver = require("../models/driver");
+const Vehicle = require("../models/vehicle");
 
 // Get all
 router.get("/", async (req, res) => {
@@ -31,11 +33,18 @@ router.post("/", async (req, res) => {
     const newUser = await user.save();
     // 201 newly created
     if (newUser.userType === "driver") {
-      const { isVaccinated, isVerified } = req.body;
+      const { isVaccinated, isVerified, driverVehicle } = req.body;
+      const vehicle = await insertVehicleDetails(
+        driverVehicle.type,
+        driverVehicle.model,
+        driverVehicle.plateNumber,
+        driverVehicle.capacity
+      );
       const newDriver = await insertDriverDetails(
         newUser,
         isVaccinated,
-        isVerified
+        isVerified,
+        [vehicle]
       );
       res.status(201).json(newDriver);
     } else {
@@ -96,11 +105,28 @@ async function getUser(req, res, next) {
 }
 
 // Insert Driver Details
-const insertDriverDetails = async (userInfo, isVaccinated, isVerified) => {
+const insertDriverDetails = async (
+  userInfo,
+  isVaccinated,
+  isVerified,
+  vehicles
+) => {
   const newDriver = new Driver({
     userInfo,
     isVaccinated,
     isVerified,
+    vehicles,
   });
   return newDriver.save();
+};
+
+// Insert Vehicle Details
+const insertVehicleDetails = async (type, model, plateNumber, capacity) => {
+  const newVehicle = new Vehicle({
+    type,
+    model,
+    plateNumber,
+    capacity,
+  });
+  return newVehicle.save();
 };

@@ -17,6 +17,12 @@ const driverSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    vehicles: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Vehicle",
+      },
+    ],
   },
   { timestamps: true }
 );
