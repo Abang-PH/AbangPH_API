@@ -26,4 +26,7 @@ app.use("/drivers", driverRouter);
 const vehicleRouter = require("./routes/vehicles");
 app.use("/vehicles", vehicleRouter);
 
+const reviewRouter = require("./routes/reviews");
+app.use("/reviews", reviewRouter);
+
 app.listen(3000, () => console.log("Server Started"));

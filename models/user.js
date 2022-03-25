@@ -14,6 +14,14 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    email: {
+      type: String,
+      required: true,
+    },
+    mobileNumber: {
+      type: Number,
+      required: true,
+    },
     userType: {
       type: String,
       enum: ["commuter", "driver"],
